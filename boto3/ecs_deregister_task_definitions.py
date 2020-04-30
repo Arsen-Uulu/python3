@@ -42,11 +42,11 @@ def delete_not_active_task_definitions(taskDefinitionName):
             if task == active_task_definition:
                 task_definitions.remove(task)
                 if len(task_definitions) == 0:
-                    return task, ":ACTIVE"
+                    return task, "ACTIVE"
                 break
         for task in task_definitions:
+            result.append(task)
             response = client.deregister_task_definition(taskDefinition=task)
-            result = response['taskDefinition']
-        return result
+        return result,response['taskDefinition']['status']
     except Exception as err:
         return err, "Couldn't remove item from the list"
