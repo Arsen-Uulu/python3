@@ -7,6 +7,10 @@ client = boto3.client(
         )
 
 def list_functions(search_functions):
+    """
+    fucn: list_functions() returns a list of AWS Labmda functiions
+
+    """
     try:
         checkout_functions = []
         result = []
@@ -21,6 +25,10 @@ def list_functions(search_functions):
         return err
 
 def delete_functions(search_functions):
+    """
+    func delete_functions() deletes returned functions from list_functions()
+
+    """
     try:
         function_names = list_functions(search_functions)
         for index in range(len(function_names)):

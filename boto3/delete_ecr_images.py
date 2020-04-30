@@ -3,6 +3,9 @@ import boto3
 client = boto3.client('ecr')
 
 def list_images(registryId,registryName,tagStatus): # registryId is AWS Account number 
+    """
+    func: list_images() returns a list of docker images stored in ECR for any given RepoName
+    """
     try: 
         result = []
         response = client.list_images(
@@ -19,6 +22,10 @@ def list_images(registryId,registryName,tagStatus): # registryId is AWS Account 
         return err,'Wrong key'
 
 def batch_delete_images(registryId,registryName,tagStatus): 
+    """
+    func: batch_delete_images() calls list_images() to do batch delete of returned docker images
+
+    """
     try:
         img_to_del = list_images(registryId,registryName,tagStatus) 
         for index in range(len(img_to_del)):
