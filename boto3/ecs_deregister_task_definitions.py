@@ -1,4 +1,4 @@
-import boto3 
+import boto3
 
 client = boto3.client('ecs')
 
@@ -8,14 +8,13 @@ def list_task_definitions(serviceName,taskStatus="ACTIVE",sortOrder='DESC'):
 
     """
     try:
-        result = []
         response = client.list_task_definitions(
                 familyPrefix = serviceName,
                 status       = taskStatus,
                 sort         = sortOrder
                 )
         return response['taskDefinitionArns'] 
-    except ClientException as err:
+    except KeyError as err:
         return err,"Unable to describe task definition"
 
 def get_active_task_definition(taskDefinition):
@@ -27,7 +26,7 @@ def get_active_task_definition(taskDefinition):
         response = client.describe_task_definition(taskDefinition=taskDefinition)   
         return response['taskDefinition']['taskDefinitionArn']
     except KeyError as err:
-        return KeyError,"Wrong Key"
+        return err,"Wrong Key"
 
 def delete_not_active_task_definitions(taskDefinitionName):
     """

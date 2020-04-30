@@ -12,7 +12,7 @@ def list_functions(search_functions):
 
     """
     try:
-        checkout_functions = []
+        filtered_functions = []
         result = []
         response = client.list_functions()
         data = [data for data in response['Functions']]
@@ -34,5 +34,5 @@ def delete_functions(search_functions):
         for index in range(len(function_names)):
             response = client.delete_function(FunctionName = function_names[index])
         return response
-    except InvalidParameterValueException:
+    except ValueError:
         return "One of the parameters in the request is invalid."
