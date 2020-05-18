@@ -7,7 +7,7 @@ FORMAT = "[%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s"
 logging.basicConfig(format=FORMAT)
 log.setLevel(logging.DEBUG)
 
-def create_access_key(userName):
+def create_access_key(user_name):
     """
     func: createAccessKey() generate API keys and return the values. 
     Note: User can't have more than 2 API keys at a time.  
@@ -16,19 +16,19 @@ def create_access_key(userName):
     client = boto3.client('iam')
     try:
         response = client.create_access_key(
-            UserName = userName 
+            UserName = user_name 
         )
         json_data = json.dumps(response['AccessKey'], indent=4, sort_keys=True, default=str)
         return json_data
     except client.exceptions.LimitExceededException as err:
         log.error(err)
 
-def list_access_keys(userName):
+def list_access_keys(user_name):
     result = []
     client = boto3.client('iam')
     try:
         response = client.list_access_keys(
-            UserName = userName
+            UserName = user_name
         )
         try:
             for index in range(len(response['AccessKeyMetadata'])):
@@ -38,5 +38,3 @@ def list_access_keys(userName):
             log.error(err)
     except client.exceptions.NoSuchEntityException as err:
         log.error(err)
-
-print(listAccessKeys('test-user'))
