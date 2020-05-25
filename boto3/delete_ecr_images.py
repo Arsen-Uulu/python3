@@ -2,18 +2,18 @@ import boto3
 
 client = boto3.client('ecr')
 
-def list_images(registryId,registryName,tagStatus): # registryId is AWS Account number 
+def list_images(registry_id, registry_name:str, tag_status:str) -> list: # registryId is AWS Account number 
     """
     func: list_images() returns a list of docker images stored in ECR for any given RepoName
     """
     try: 
         result = []
         response = client.list_images(
-                registryId = registryId,
-                repositoryName = registryName,
+                registryId = registry_id,
+                repositoryName = registry_name,
                 filter={
-                    'tagStatus': tagStatus # tagStasus Options ANY | TAGGED | UNTAGGED
-                }
+                    'tagStatus': tag_status # tagStasus Options ANY | TAGGED | UNTAGGED
+            }
         )
         for index in range(len(response['imageIds'])):
             result.append(response['imageIds'][index]['imageDigest'])
@@ -21,17 +21,17 @@ def list_images(registryId,registryName,tagStatus): # registryId is AWS Account 
     except KeyError as err:
         return err,'Wrong key'
 
-def batch_delete_images(registryId,registryName,tagStatus): 
+def batch_delete_images(registry_id:str, registry_name:str, tag_status:str) -> dict: 
     """
     func: batch_delete_images() calls list_images() to do batch delete of returned docker images
 
     """
     try:
-        img_to_del = list_images(registryId,registryName,tagStatus) 
+        img_to_del = list_images(registry_id,registry_name,tag_status) 
         for index in range(len(img_to_del)):
             response = client.batch_delete_image(
-                    registryId = registryId,
-                    repositoryName = registryName,
+                    registryId = registry_id,
+                    repositoryName = registry_name,
                     imageIds = [
                         {
                             'imageDigest': img_to_del[index]

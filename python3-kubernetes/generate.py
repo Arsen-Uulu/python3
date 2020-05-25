@@ -6,10 +6,7 @@ import kubernetes.client
 from kubernetes import client, config
 import base64
 
-#local module 
-from secrets import * # define your secret list in secrest.py file 
-
-def create_secret_objects(secret_name,name_space,lst):
+def create_secret_objects(secret_name,name_space: str, lst: list):
     """
     function: create_secret_objects() creates Kubernetes Secret Object using credentilas from ~/.kube/config
     if Kubernetes Secret Object already exist it will perform update in place if your secret_list has new secrets
@@ -35,7 +32,7 @@ def create_secret_objects(secret_name,name_space,lst):
         else:
             print("Exception when calling CoreV1Api->create_namespaced_secret: %s\n" % err)
 
-def encode_64(lst):
+def encode_64(lst: list) -> dict:
     """
     function: encode64() return type <dict> with encoded base64 values
     args: lst - inherits lst argument from create_secret_objects() function
@@ -54,22 +51,18 @@ def encode_64(lst):
     except Exception as err:
         return err
 
-def generate_secrets_data(lst):
+def generate_secrets_data(lst: list) -> dict:
     """
     function: generate_secrets_data() makes API call to AWS KMS and generates type <dict> with dict[secretName] = value and returns it
     """
     secrets_name_value = {}
     client = boto3.client('secretsmanager')
-    try:
-        for secret in lst:
-            try:
-                response = client.get_secret_value(
-                        SecretId = secret
-                        )
-                secrets_name_value[response['Name'] = response['SecretString']
-                #secrets_name_value[response['Name'].replace('/','-').strip('-')] = response['SecretString'] #Nevermind this line, this is was my use case
-            except client.exceptions.ResourceNotFoundException as err:
-                return err
-        return secrets_name_value
-    except Exception as err:
-        return err
+    for secret in lst:
+        try:
+            response = client.get_secret_value(
+                SecretId = secret
+            )
+            secrets_name_value[response['Name']] = response['SecretString']
+        except client.exceptions.ResourceNotFoundException as err:
+            return err
+    return secrets_name_value

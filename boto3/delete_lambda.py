@@ -6,7 +6,7 @@ client = boto3.client(
         'lambda'
         )
 
-def list_functions(search_functions):
+def list_functions(search_functions:str) -> list:
     """
     fucn: list_functions() returns a list of AWS Labmda functiions
 
@@ -24,7 +24,7 @@ def list_functions(search_functions):
     except Exception as err:
         return err
 
-def delete_functions(search_functions):
+def delete_functions(search_functions:str) -> dict:
     """
     func delete_functions() deletes returned functions from list_functions()
 
