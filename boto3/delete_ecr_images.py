@@ -9,10 +9,10 @@ def list_images(registry_id, registry_name:str, tag_status:str) -> list: # regis
     try: 
         result = []
         response = client.list_images(
-                registryId = registry_id,
-                repositoryName = registry_name,
-                filter={
-                    'tagStatus': tag_status # tagStasus Options ANY | TAGGED | UNTAGGED
+            registryId = registry_id,
+            repositoryName = registry_name,
+            filter={
+                'tagStatus': tag_status # tagStasus Options ANY | TAGGED | UNTAGGED
             }
         )
         for index in range(len(response['imageIds'])):
@@ -30,13 +30,13 @@ def batch_delete_images(registry_id:str, registry_name:str, tag_status:str) -> d
         img_to_del = list_images(registry_id,registry_name,tag_status) 
         for index in range(len(img_to_del)):
             response = client.batch_delete_image(
-                    registryId = registry_id,
-                    repositoryName = registry_name,
-                    imageIds = [
-                        {
-                            'imageDigest': img_to_del[index]
-                        }
-                    ]
+                registryId = registry_id,
+                repositoryName = registry_name,
+                imageIds = [
+                    {
+                        'imageDigest': img_to_del[index]
+                    }
+                ]
             )
         return response
     except KeyError as error:
